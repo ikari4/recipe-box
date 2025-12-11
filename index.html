@@ -1,0 +1,37 @@
+<!-- index.html -->
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="./NEWFAVICON.png" type="image/png">
+    <link rel="apple-touch-icon" href="./ NEWFAVICON.png">
+    <link rel="mask-icon" href="./ NEWFAVICON " color="black">
+    <title>Recipes</title>
+</head>
+<body>
+    <div id="index_div">
+        <div class="info_div">
+            <div class="title_div" id="index_title"></div>
+            <div class="add_div" id="index_add"></div>
+        </div>
+        <div class="select_div">
+            <select name="cat" class="dropdown" id="category_drop">
+                <option disabled selected>Select Category</option>
+                <option value="appetizers">Appetizers</option>
+                <option value="soups">Soups</option>
+                <option value="breakfasts">Breakfasts</option>
+                <option value="mains">Mains</option>
+                <option value="sides">Sides</option>
+                <option value="sauces">Sauces/Seasonings</option>
+                <option value="desserts">Desserts</option>
+                <option value="cocktails">Cocktails</option>
+            </select>
+        </div>
+        <div class="msg_div"></div>
+        <div id="recipe_list"></div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

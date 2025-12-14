@@ -1,21 +1,17 @@
 // index.js
 
 // getRecipes function
-async function getRecipes(catDropdown) {
-    msg.textContent = "Loading…";
+async function getRecipes(catDropdownValue) {
+    
+    msg.innerHTML = `Loading… ${catDropdownValue}`;
     recipeList.innerHTML = "";
 
     try {
-        const res = await fetch('/api/recipes_db', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify( { dropValue: catDropdown.value }),
-        });
-        
+        const res = await fetch(`/api/get_recipes?category=${encodeURIComponent(catDropdownValue)}`);
         const recipes = await res.json();
         
         if (res.ok) {
-            msg.textContent = `Loaded ${recipes.items.length} ${catDropdown.value} recipes`
+            msg.textContent = `Loaded ${recipes.items.length} ${catDropdownValue} recipes`
 
         recipes.items.forEach(item => {
             const li = document.createElement('li');
@@ -37,7 +33,7 @@ async function getRecipes(catDropdown) {
 
 // main js starts here
 // setup divs in js to modify DOM
-const msg = document.getElementById('msg_div');
+const msg = document.getElementById('index_msg');
 const recipeList = document.getElementById('recipe_list');
 const addDiv = document.getElementById('index_add');
 
@@ -50,5 +46,5 @@ addDiv.appendChild(addLink);
 // event listener for category dropdown
 const catDropdown = document.getElementById('category_drop');
 catDropdown.addEventListener('change', () => {
-    getRecipes(catDropdown);
+    getRecipes(catDropdown.value);
 });

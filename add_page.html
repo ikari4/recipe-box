@@ -5,33 +5,57 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="styles.css">
-    <title>add_page.html</title>
+    <title>Add Recipe</title>
 </head>
 <body>
+    <div id="add_div">
+        <!-- page header -->
+        <div class="info_div" id="add_info">
+            <div class="title_div" id="info_title">title_div</div>
+            <div class="home_link" id="homeFromAdd">home_link</div>
+        </div>
+        <!-- add new ingredient to database -->
+        <div id="add_ingredient_to_db_div">
+            <form id="add_ingredient_to_db_form">
+                <div>
+                    <label for="addIngredientToDb">Ingredient Name:</label>
+                    <input type="text" id="addIngredientToDb" name="addIngredientToDb" required>
+                </div>
+                <button type="submit" id="submitIngredientBtn">Submit</button>
+            </form>
+        </div>
+        <!-- add a new recipe to database -->
+        <div id="add_recipe_div">
+            <form id="addRecipeForm">
+                <!-- add recipe name, category and description -->
+                <div id="recipe_info_entry">
+                    <label for="addRecipeName">Recipe Name:</label>
+                    <input type="text" id="addRecipeName" name="addRecipeName" required>
+                    <div class="select_div" id="add_category">
+                        <select name="categoryDrop" class="dropdown" id="categoryDrop" required>
+                            <option disabled selected>Select Category</option>
+                            <option value="appetizers">Appetizers</option>
+                            <option value="soups">Soups</option>
+                            <option value="breakfasts">Breakfasts</option>
+                            <option value="mains">Mains</option>
+                            <option value="sides">Sides</option>
+                            <option value="sauces">Sauces/Seasonings</option>
+                            <option value="desserts">Desserts</option>
+                            <option value="cocktails">Cocktails</option>
+                        </select>
+                    </div>
+                    <label for="addRecipeDescription">Description:</label>
+                    <textarea id="addRecipeDescription" name="addRecipeDescription" rows="5" cols="50"></textarea>
+                </div>
+                <!-- add list of ingredients, units and quantities -->
+                <div id="ingredientEntry"></div>
+                <!-- add list of recipe steps -->
+                <div id="stepEntry"></div>
+                <button type="submit" id="submitRecipeBtn">Submit</button>
+                <div class="msg_div" id="addMsg"></div>
+            </form>
+        </div>
+    </div>
+  <script src="add_page.js"></script>  
 </body>
-
-
-<!--pseudocode 
-link add_page.js
-#add_div
-	.info_div
-		.title_div
-		.home_link
-	#add_ingredient_div
-		new_ingredient entry box
-		.submit_btn
-	#add_recipe_form
-		#info_entry
-			text entry for title
-			.category_drop
-			.subcategory_drop
-		#ingredient_entry
-			quantity
-			.unit_drop
-			.ingredient_drop
-			add row button
-		#step_entry
-			long text entry for step
-			add row button
-		.submit_btn 
--->
+</html>

@@ -26,11 +26,11 @@ async function getIngredients() {
         if (res.ok) {
             return(ingredients);
         } else {
-            msg.textContent = "Error";
+            addRecipeMsg.textContent = "Error";
         };
     
     } catch (err) {
-        msg.textContent = "Network error: " + err.message;
+        addRecipeMsg.textContent = "Network error: " + err.message;
     }
 }
 
@@ -152,7 +152,196 @@ const addIngredientBtn  = document.createElement("button");
 const stepEntry         = document.getElementById("stepEntry");
 const addStepBtn        = document.createElement("button");
 const submitRecipeBtn   = document.getElementById("submitRecipeBtn");
-const msg               = document.getElementById("addMsg");
+const addRecipeMsg      = document.getElementById("addRecipeMsg");
+
+// code copied from groceries
+
+const newIngredientForm = document.getElementById('addNewIngredient');
+const addIngredientMsg = document.getElementById('addIngredientMsg');
+const searchMsg = document.getElementById('searchMsg');
+const searchForm = document.getElementById('search');
+const listArea = document.getElementById('listArea');
+const searchBtn = document.getElementById('searchBtn');
+
+// helper to escape HTML for safe insertion into the DOM
+function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>"']/g, s => (
+        {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]
+    ));
+}
+
+// Submit Add Form
+newIngredientForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+        ingredientName: newIngredientForm.ingredientName.value.trim()
+    };
+
+    try {
+        const res = await fetch('/api/post_new_ingredient', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+        });
+
+        const json = await res.json();
+        if (res.ok) {
+            addIngredientMsg.textContent = 'Saved — thank you!';
+            searchMsg.textContent = '';
+            newIngredientForm.reset();
+        } else {
+            addIngredientMsg.textContent = 'Error: ' + (json?.error || res.statusText);
+            searchMsg.textContent = '';
+        }
+    } catch (err) {
+        addIngredientMsg.textContent = 'Network error: ' + err.message;
+        searchMsg.textContent = '';
+    }
+});
+
+// Submit Search Form
+searchForm.addEventListener('submit', async (e) => {
+    searchBtn.disabled = true;
+    searchBtn.textContent = 'Wait...';
+    listArea.innerHTML = '';
+    e.preventDefault();
+    const searchIngredient = searchForm.searchIngredient.value.trim()
+
+    try {
+        const res = await fetch(`/api/get_search?searchTerm=${encodeURIComponent(searchIngredient)}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        const json = await res.json();
+        const results = json.items;
+
+        if (res.ok) {
+            if (!results.length) {
+                searchBtn.disabled = false;
+                searchBtn.textContent = 'Search';
+                searchMsg.textContent = 'No results found';
+                addIngredientMsg.textContent = '';
+                return;
+            }
+
+            // build table
+            const table = document.createElement('table');
+            table.className = 'results-table';
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Results</th>
+                        <th>&#128465</th>
+                    </tr>
+                </thead>
+            `;
+            const tbody = document.createElement('tbody');
+            results.forEach(r => {
+                const tr = document.createElement('tr');
+                // checkbox for adding item to grocery list
+                // const checkbox = document.createElement('input');
+                // checkbox.type = 'checkbox';
+                // checkbox.checked = r.checked === 1;
+                // button for deleting item from database
+                const deleteMe = document.createElement('button');
+                deleteMe.textContent = 'X';
+
+                if (r.ingredient_id !=null) deleteMe.dataset.id=String(r.ingredient_id);
+                
+                // When checkbox changes, update DB and refresh list
+                // checkbox.addEventListener('change', async () => {
+                //     try {
+                //         const patchRes = await fetch('/api/patch', {
+                //             method: 'PATCH',
+                //             headers: { 'Content-Type': 'application/json' },
+                //             body: JSON.stringify({ id: checkbox.dataset.id, checked: checkbox.checked })
+                //         });
+
+                //         if (patchRes.ok) {
+                //             searchMsg.textContent = `Updated "${r.item_name}" successfully.`;
+                //             addIngredientMsg.textContent = '';
+                //         } else {
+                //             searchMsg.textContent = `Error updating "${r.item_name}".`;
+                //             addIngredientMsg.textContent = '';
+                //         }
+                //     } catch (err) {
+                //         searchMsg.textContent = 'Network error: ' + err.message;
+                //         addIngredientMsg.textContent = '';
+                //     }
+                // });
+
+                // When delete button is clicked, delete from DB
+                deleteMe.addEventListener('click', async() => {
+                    try {
+                        const patchRes = await fetch('/api/delete', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ ingredient_id: deleteMe.dataset.id })
+                        });
+
+                        if (patchRes.ok) {
+                            searchMsg.textContent = `Deleted "${r.ingredient_name}" successfully.`;
+                            addIngredientMsg.textContent = '';
+                            tr.classList.add("deletedRow");
+                            deleteMe.disabled = true;
+                        } else {
+                            searchMsg.textContent = `Error deleting "${r.ingredient_name}".`;
+                            addIngredientMsg.textContent = '';
+                        }
+
+                    } catch (err) {
+                        searchMsg.textContent = 'Network error: ' + err.message;
+                        addIngredientMsg.textContent = '';
+                    }
+                });
+
+                const ingredient = r.ingredient_name ?? '';
+                // const store = r.store ?? '';
+                // const category = r.category ?? '';
+                tr.innerHTML = `
+                    <td class="cb-cell"></td>
+                    <td>${escapeHtml(ingredient)}</td>
+                    <td class="del-Btn"></td>
+                `;
+
+                // const cbCell = tr.querySelector('.cb-cell');
+                // if (cbCell) cbCell.appendChild(checkbox);
+                
+                const delBtn = tr.querySelector('.del-Btn');
+                if (delBtn) delBtn.appendChild(deleteMe);
+
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            listArea.appendChild(table);
+            searchMsg.textContent = `Found ${results.length} ingredient(s)`;
+            addIngredientMsg.textContent = '';
+            searchBtn.disabled = false;
+            searchBtn.textContent = 'Search';
+            searchForm.reset();
+
+        } else {
+            searchBtn.disabled = false;
+            searchBtn.textContent = 'Search';
+            searchMsg.textContent = 'Error: ' + (json?.error || res.statusText);
+            addIngredientMsg.textContent = '';
+            
+        }
+    } catch (err) {
+        searchBtn.disabled = false;
+        searchBtn.textContent = 'Search';
+        searchMsg.textContent = 'Network error: ' + err.message;
+        addIngredientMsg.textContent = '';
+    }
+    
+});
+
+
+
+
+
+// code copied from groceries
 
 // globals to hold fetched lookup data and initiate page
 let ingredientObjectGlobal;

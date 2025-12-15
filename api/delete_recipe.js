@@ -1,4 +1,4 @@
-// api/delete.js
+// api/delete_recipe.js
 
 import { createClient } from "@libsql/client";
 
@@ -7,29 +7,37 @@ const turso = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
-// Main API handler
 export default async function handler(req, res) {
   try {
 
-    // Handle DELETE — update checked status
     if (req.method === 'DELETE') {
-      const { ingredient_id } = req.body || {};
+      const { recipe_id } = req.body || {};
 
-      if (!ingredient_id) {
+      if (!recipe_id) {
         res.status(400).json({ error: 'Invalid DELETE data' });
         return;
       }
 
-      await turso.execute({
-        sql: `DELETE FROM ingredients WHERE ingredient_id = ?`,
-        args: [ingredient_id],
-      });
+        await turso.execute({
+            sql: `DELETE FROM recipe_ingredients WHERE recipe_id = ?`,
+            args: [recipe_id],
+        });
+
+        await turso.execute({
+            sql: `DELETE FROM recipe_steps WHERE recipe_id = ?`,
+            args: [recipe_id],
+        });
+
+        await turso.execute({
+            sql: `DELETE FROM recipes WHERE recipe_id = ?`,
+            args: [recipe_id],
+        });
 
       res.status(200).json({ ok: true });
       return;
     }
 
-    // If any other HTTP method → not allowed
+    // if any other HTTP method → not allowed
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
     console.error('DB error:', err);

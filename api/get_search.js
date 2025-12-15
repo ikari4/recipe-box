@@ -13,7 +13,6 @@ const isValidString = (s) => typeof s === 'string' && s.trim().length > 0;
 export default async function handler(req, res) {
   try {
 
-    // Handle GET — fetch items based on store + filter
     if (req.method === 'GET') {
       const { searchTerm } = req.query || {};
 
@@ -30,7 +29,7 @@ export default async function handler(req, res) {
       return;
     }
 
-    // If any other HTTP method → not allowed
+    // if any other HTTP method → not allowed
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
     console.error('DB error:', err);

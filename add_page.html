@@ -8,64 +8,70 @@
     <title>Add Recipe</title>
 </head>
 <body>
-    <h1>Add New Ingredient</h1>
-    <form id="addNewIngredient">
-        <div class="form-group">
-            <label for="ingredientName">Ingredient:</label>
-            <input type="text" name="ingredientName">
-        </div>
-        <div class="buttonDiv">
-            <button type="submit" >Submit</button>
-        </div>
-    </form>
-    <br>
-    <div id="addIngredientMsg" role="status"></div>
-    <hr>
-    <h1>Search For Ingredient</h1>
-    <form id="search">
-        <div class="form-group">
-            <label for="searchIngredient">Search:</label>
-            <input type="text" name="searchIngredient" id="searchIngredient">
-        </div>
-        <div class="buttonDiv">
-            <button type="submit" id="searchBtn">Search</button>
-        </div>
-    </form>
-    <br>
-    <div id="searchMsg" role="status"></div>
-    <div id="listArea"></div>
-    <hr>
-    <br>
-    <!-- add a new recipe to database -->
-    <div id="add_recipe_div">
-        <form id="addRecipeForm">
-            <!-- add recipe name, category and description -->
-            <div id="recipe_info_entry">
-                <label for="addRecipeName">Recipe Name:</label>
-                <input type="text" id="addRecipeName" name="addRecipeName" required>
-                <div class="select_div" id="add_category">
-                    <select name="categoryDrop" class="dropdown" id="categoryDrop" required>
-                        <option disabled selected>Select Category</option>
-                        <option value="appetizers">Appetizers</option>
-                        <option value="soups">Soups</option>
-                        <option value="breakfasts">Breakfasts</option>
-                        <option value="mains">Mains</option>
-                        <option value="sides">Sides</option>
-                        <option value="sauces">Sauces/Seasonings</option>
-                        <option value="desserts">Desserts</option>
-                        <option value="cocktails">Cocktails</option>
-                    </select>
-                </div>
-                <label for="addRecipeDescription">Description:</label>
-                <textarea id="addRecipeDescription" name="addRecipeDescription" rows="5" cols="50"></textarea>
+    <div id="add_page">    
+        <div id="left_add">
+            <div id="new_ingredient">
+                <h1>Add New Ingredient</h1>
+                <form id="addNewIngredient">
+                    <div class="form-group">
+                        <!-- <label for="ingredientName">Ingredient:</label> -->
+                        <input type="text" name="ingredientName" id="ingredientName">
+                        <button type="submit" id="ingredientSubmitBtn">Submit</button>
+                    </div>
+                </form>
+                <br>
+                <div id="addIngredientMsg" role="status"></div>
+                <hr>
             </div>
-            <!-- add list of ingredients, units and quantities -->
-            <div id="ingredientEntry"></div>
-            <!-- add list of recipe steps -->
-            <div id="stepEntry"></div>
-            <button type="submit" id="submitRecipeBtn">Submit</button>
-            <div class="msg_div" id="addRecipeMsg"></div>
-        </form>
+            <div id="search_ingredient">
+                <h1>Search For Ingredient</h1>
+                <form id="search">
+                    <div class="form-group">
+                        <!-- <label for="searchIngredient">Search:</label> -->
+                        <input type="text" name="searchIngredient" id="searchIngredient">
+                        <button type="submit" id="searchBtn">Search</button>
+                    </div>
+                </form>
+                <br>
+                <div id="searchMsg" role="status"></div>
+                <div id="listArea"></div>
+            </div>
+        </div>
+        <div id="empty_div"></div>
+        <div id="right_add">
+            <!-- add a new recipe to database -->
+            <h1>Add New Recipe</h1>
+            <div id="add_recipe_div">
+                <form id="addRecipeForm">
+                    <!-- add recipe name, category and description -->
+                    <div id="recipe_info_entry">
+                        <!-- <label for="addRecipeName">Recipe Name:</label> -->
+                        <input type="text" id="addRecipeName" name="addRecipeName" value="Enter Recipe Name" required>
+                        <div class="select_div" id="add_category">
+                            <select name="categoryDrop" class="dropdown" id="categoryDrop" required>
+                                <option disabled selected>Category</option>
+                                <option value="appetizers">Appetizers</option>
+                                <option value="soups">Soups</option>
+                                <option value="breakfasts">Breakfasts</option>
+                                <option value="mains">Mains</option>
+                                <option value="sides">Sides</option>
+                                <option value="sauces">Sauces/Seasonings</option>
+                                <option value="desserts">Desserts</option>
+                                <option value="cocktails">Cocktails</option>
+                            </select>
+                        </div>
+                    </div>
+                    <textarea id="addRecipeDescription" name="addRecipeDescription" rows="5">Enter Recipe Description</textarea>
+
+                    <!-- add list of ingredients, units and quantities -->
+                    <div id="ingredientEntry"></div>
+                    <!-- add list of recipe steps -->
+                    <div id="stepEntry"></div>
+                    <button type="submit" id="submitRecipeBtn">Submit</button>
+                    <div class="msg_div" id="addRecipeMsg"></div>
+                </form>
+            </div>
+        </div>
     </div>
     <script src="add_page.js"></script>  
 </body>

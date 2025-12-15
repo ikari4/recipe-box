@@ -7,7 +7,6 @@ const turso = createClient ({
     authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
-// api handler
 export default async function handler(req, res) {
 
     if (req.method === 'GET') {

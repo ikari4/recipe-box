@@ -7,10 +7,8 @@ const turso = createClient ({
 	authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
-// api handler
 export default async function handler(req, res) {
 
-// GET request when called from getRecipes()
     if (req.method === 'GET') {
         const dropValue = req.query.category;
 

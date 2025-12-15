@@ -38,6 +38,9 @@ async function getIngredients() {
 function addIngredientRow(ingredientNo, ingredientObject)  {
     ingredientObject = ingredientObject || { ingredients: [] };
 
+    const row = document.createElement("div");
+    row.className = "ingredient-row";
+
     // create quantity input
     const wholes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
     const addIngredientQuantity = document.createElement("select")
@@ -50,7 +53,7 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
     quantLabel.selected = true;
     quantLabel.defaultSelected = true;
     addIngredientQuantity.appendChild(quantLabel);
-    ingredientEntry.appendChild(addIngredientQuantity);
+    // ingredientEntry.appendChild(addIngredientQuantity);
     wholes.forEach(value => {
         const wholeOpt = document.createElement("option");
         wholeOpt.value = value;
@@ -74,12 +77,12 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
         fracOpt.textContent = value;
         addIngredientFraction.appendChild(fracOpt);
     });
-    ingredientEntry.appendChild(addIngredientFraction);
+    // ingredientEntry.appendChild(addIngredientFraction);
 
     // create unit drop
     const units = ["tsp", "tbsp", "fl oz", "cup", "pt", "qt", 
         "gal", "oz", "lb", "g", "kg", "mL", "L", "in", "small",
-        "medium", "large"];
+        "medium", "large", "pinch", "dash"];
     const addUnitDrop = document.createElement("select");
     addUnitDrop.name = `addUnitDrop${ingredientNo}`;
     addUnitDrop.id = `addUnitDrop${ingredientNo}`;
@@ -96,7 +99,7 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
         unitOpt.textContent = unit;
         addUnitDrop.appendChild(unitOpt);
     });
-    ingredientEntry.appendChild(addUnitDrop);
+    // ingredientEntry.appendChild(addUnitDrop);
     
     // create ingredient drop
     const addIngredientDrop = document.createElement("select");
@@ -114,34 +117,46 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
         ingrOpt.textContent = ingredient.ingredient_name;
         addIngredientDrop.appendChild(ingrOpt);
     });
-    ingredientEntry.appendChild(addIngredientDrop);
+    // ingredi/entEntry.appendChild(addIngredientDrop);
 
     // create add an ingredient button
     addIngredientBtn.type = "button";
     addIngredientBtn.textContent = "+";
-    ingredientEntry.appendChild(addIngredientBtn);
-
+    // ingredientEntry.appendChild(addIngredientBtn);
+    
+    row.append(
+        addIngredientQuantity,
+        addIngredientFraction,
+        addUnitDrop,
+        addIngredientDrop,
+        addIngredientBtn
+    );
+    ingredientEntry.appendChild(row);
+    
     // add line break
-    ingredientEntry.appendChild(document.createElement("br"));
+    // ingredientEntry.appendChild(document.createElement("br"));
 }
 
 // adds steps row to page
 function addStepRow(stepNo)  {
     // create quantity input
     const addStep = document.createElement("textarea")
+    const row = document.createElement("div");
+    row.className = "step-row";
+    addStep.value = "Enter Step Text"
     addStep.rows = 3;
-    addStep.cols = 50;
     addStep.name = `addStep${stepNo}`;
     addStep.id = `addStep${stepNo}`;
-    stepEntry.appendChild(addStep);
+    // stepEntry.appendChild(addStep);
 
     // create add an ingredient button
     addStepBtn.type = "button";
     addStepBtn.textContent = "+";
-    stepEntry.appendChild(addStepBtn);
-
+    // stepEntry.appendChild(addStepBtn);
+    row.append(addStep, addStepBtn);
+    stepEntry.appendChild(row);
     // add line break
-    stepEntry.appendChild(document.createElement("br"));
+    // stepEntry.appendChild(document.createElement("br"));
 
 }
 
@@ -153,25 +168,18 @@ const stepEntry         = document.getElementById("stepEntry");
 const addStepBtn        = document.createElement("button");
 const submitRecipeBtn   = document.getElementById("submitRecipeBtn");
 const addRecipeMsg      = document.getElementById("addRecipeMsg");
-
-// code copied from groceries
-
 const newIngredientForm = document.getElementById('addNewIngredient');
 const addIngredientMsg = document.getElementById('addIngredientMsg');
 const searchMsg = document.getElementById('searchMsg');
 const searchForm = document.getElementById('search');
 const listArea = document.getElementById('listArea');
 const searchBtn = document.getElementById('searchBtn');
+const ingredientSubmitBtn = document.getElementById('ingredientSubmitBtn');
 
-// helper to escape HTML for safe insertion into the DOM
-function escapeHtml(str) {
-    return String(str ?? '').replace(/[&<>"']/g, s => (
-        {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]
-    ));
-}
-
-// Submit Add Form
+// submit new ingredient form
 newIngredientForm.addEventListener('submit', async (e) => {
+    ingredientSubmitBtn.disabled = true;
+    ingredientSubmitBtn.textContent = 'Wait...';
     e.preventDefault();
     const data = {
         ingredientName: newIngredientForm.ingredientName.value.trim()
@@ -186,26 +194,33 @@ newIngredientForm.addEventListener('submit', async (e) => {
 
         const json = await res.json();
         if (res.ok) {
+            ingredientSubmitBtn.disabled = false;
+            ingredientSubmitBtn.textContent = 'Submit';
             addIngredientMsg.textContent = 'Saved — thank you!';
             searchMsg.textContent = '';
             newIngredientForm.reset();
         } else {
+            ingredientSubmitBtn.disabled = false;
+            ingredientSubmitBtn.textContent = 'Submit';
             addIngredientMsg.textContent = 'Error: ' + (json?.error || res.statusText);
             searchMsg.textContent = '';
         }
     } catch (err) {
+        ingredientSubmitBtn.disabled = false;
+        ingredientSubmitBtn.textContent = 'Submit';
         addIngredientMsg.textContent = 'Network error: ' + err.message;
         searchMsg.textContent = '';
     }
 });
 
-// Submit Search Form
+// submit search form
 searchForm.addEventListener('submit', async (e) => {
     searchBtn.disabled = true;
     searchBtn.textContent = 'Wait...';
     listArea.innerHTML = '';
     e.preventDefault();
     const searchIngredient = searchForm.searchIngredient.value.trim()
+    console.log(searchIngredient);
 
     try {
         const res = await fetch(`/api/get_search?searchTerm=${encodeURIComponent(searchIngredient)}`, {
@@ -239,42 +254,13 @@ searchForm.addEventListener('submit', async (e) => {
             const tbody = document.createElement('tbody');
             results.forEach(r => {
                 const tr = document.createElement('tr');
-                // checkbox for adding item to grocery list
-                // const checkbox = document.createElement('input');
-                // checkbox.type = 'checkbox';
-                // checkbox.checked = r.checked === 1;
-                // button for deleting item from database
                 const deleteMe = document.createElement('button');
                 deleteMe.textContent = 'X';
-
                 if (r.ingredient_id !=null) deleteMe.dataset.id=String(r.ingredient_id);
-                
-                // When checkbox changes, update DB and refresh list
-                // checkbox.addEventListener('change', async () => {
-                //     try {
-                //         const patchRes = await fetch('/api/patch', {
-                //             method: 'PATCH',
-                //             headers: { 'Content-Type': 'application/json' },
-                //             body: JSON.stringify({ id: checkbox.dataset.id, checked: checkbox.checked })
-                //         });
 
-                //         if (patchRes.ok) {
-                //             searchMsg.textContent = `Updated "${r.item_name}" successfully.`;
-                //             addIngredientMsg.textContent = '';
-                //         } else {
-                //             searchMsg.textContent = `Error updating "${r.item_name}".`;
-                //             addIngredientMsg.textContent = '';
-                //         }
-                //     } catch (err) {
-                //         searchMsg.textContent = 'Network error: ' + err.message;
-                //         addIngredientMsg.textContent = '';
-                //     }
-                // });
-
-                // When delete button is clicked, delete from DB
                 deleteMe.addEventListener('click', async() => {
                     try {
-                        const patchRes = await fetch('/api/delete', {
+                        const patchRes = await fetch('/api/delete_ingredient', {
                             method: 'DELETE',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ ingredient_id: deleteMe.dataset.id })
@@ -295,23 +281,18 @@ searchForm.addEventListener('submit', async (e) => {
                         addIngredientMsg.textContent = '';
                     }
                 });
-
-                const ingredient = r.ingredient_name ?? '';
-                // const store = r.store ?? '';
-                // const category = r.category ?? '';
+         
                 tr.innerHTML = `
-                    <td class="cb-cell"></td>
-                    <td>${escapeHtml(ingredient)}</td>
+                    <td>${r.ingredient_name}</td>
                     <td class="del-Btn"></td>
                 `;
-
-                // const cbCell = tr.querySelector('.cb-cell');
-                // if (cbCell) cbCell.appendChild(checkbox);
                 
                 const delBtn = tr.querySelector('.del-Btn');
                 if (delBtn) delBtn.appendChild(deleteMe);
 
                 tbody.appendChild(tr);
+
+
             });
             table.appendChild(tbody);
             listArea.appendChild(table);
@@ -320,6 +301,9 @@ searchForm.addEventListener('submit', async (e) => {
             searchBtn.disabled = false;
             searchBtn.textContent = 'Search';
             searchForm.reset();
+
+                // when delete button is clicked, delete from DB
+
 
         } else {
             searchBtn.disabled = false;
@@ -334,14 +318,7 @@ searchForm.addEventListener('submit', async (e) => {
         searchMsg.textContent = 'Network error: ' + err.message;
         addIngredientMsg.textContent = '';
     }
-    
 });
-
-
-
-
-
-// code copied from groceries
 
 // globals to hold fetched lookup data and initiate page
 let ingredientObjectGlobal;
@@ -365,12 +342,15 @@ addStepBtn.addEventListener("click", () => {
 
 // event listener for new recipe submit form
 addRecipeForm.addEventListener('submit', async (e) => {
+    submitRecipeBtn.disabled = true;
+    submitRecipeBtn.textContent = 'Wait...';
     e.preventDefault();
     const addRecipeName         = document.getElementById("addRecipeName");
     const categoryDrop          = document.getElementById("categoryDrop");
     const addRecipeDescription  = document.getElementById("addRecipeDescription");
 
     // log recipe metadata and get recipe_id back
+    
     const addRecipeData = [];
     addRecipeData.push({
         recipe_name: addRecipeName.value,
@@ -426,7 +406,7 @@ addRecipeForm.addEventListener('submit', async (e) => {
             step_text: stepEl.value,
         });
     }
-console.log('stepData: ', stepData);
+
     // log new recipe ingredient data
     const ingredientRes = await fetch("/api/post_ingredient_data", {
         method: "POST",
@@ -454,9 +434,12 @@ console.log('stepData: ', stepData);
     const stepJson = await stepRes.json();
 
     if (ingredientJson.success || stepJson.success) {
-        
+        submitRecipeBtn.disabled = false;
+        submitRecipeBtn.textContent = 'Submit';
         alert('Recipe added successfully');
         addRecipeForm.reset();
         location.reload();
     }
 });
+
+

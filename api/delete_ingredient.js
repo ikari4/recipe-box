@@ -1,4 +1,4 @@
-// api/post_new_ingredient.js
+// api/delete.js
 
 import { createClient } from "@libsql/client";
 
@@ -7,30 +7,26 @@ const turso = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
-// helper to validate strings
-const isValidString = (s) => typeof s === 'string' && s.trim().length > 0;
-
 export default async function handler(req, res) {
   try {
 
-    if (req.method === 'POST') {
-      const { ingredientName } = req.body || {};
+    if (req.method === 'DELETE') {
+      const { ingredient_id } = req.body || {};
 
-      if (!isValidString(ingredientName)) {
-        res.status(400).json({ error: 'Invalid input' });
+      if (!ingredient_id) {
+        res.status(400).json({ error: 'Invalid DELETE data' });
         return;
       }
 
       await turso.execute({
-        sql: `INSERT INTO ingredients (ingredient_name)
-              VALUES (?)`,
-        args: [ingredientName.trim()],
+        sql: `DELETE FROM ingredients WHERE ingredient_id = ?`,
+        args: [ingredient_id],
       });
 
       res.status(200).json({ ok: true });
       return;
     }
-      
+
     // if any other HTTP method → not allowed
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {

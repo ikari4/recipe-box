@@ -2,7 +2,11 @@
 
 // getRecipes function
 async function getRecipes(catDropdownValue) {
-    
+
+    if(catDropdownValue === 'new') {
+        window.location.href =`add_page.html?id=${catDropdownValue}`;
+    }
+
     msg.innerHTML = `Loading… ${catDropdownValue}`;
     recipeList.innerHTML = "";
 
@@ -27,7 +31,6 @@ async function getRecipes(catDropdownValue) {
                 const tr = document.createElement('tr');
                 const deleteMe = document.createElement('button');
                 deleteMe.textContent = 'X';
-                // deleteMe.className = 'del-Btn';
 
                 if (r.recipe_id !=null) deleteMe.dataset.id=String(r.recipe_id);
                 
@@ -55,7 +58,8 @@ async function getRecipes(catDropdownValue) {
 
                 const td1 = document.createElement('td');
                 const link = document.createElement('a');
-                link.href = `recipe.html?id=${r.recipe_id}`;
+                // link.href = `recipe.html?id=${r.recipe_id}`;
+                link.href = `add_page.html?id=${r.recipe_id}`;
                 link.textContent = r.recipe_name;
                 td1.appendChild(link);
                 tr.appendChild(td1);
@@ -84,10 +88,10 @@ const recipeList = document.getElementById('recipe_list');
 const addDiv = document.getElementById('index_add');
 
 // create link to add_page.html in index_add div
-const addLink = document.createElement('a');
-addLink.href = 'add_page.html';
-addLink.textContent = 'Add New Recipe or Ingredient';
-addDiv.appendChild(addLink);
+// const addLink = document.createElement('a');
+// addLink.href = 'add_page.html';
+// addLink.textContent = 'Add New Recipe or Ingredient';
+// addDiv.appendChild(addLink);
 
 // event listener for category dropdown
 const catDropdown = document.getElementById('category_drop');

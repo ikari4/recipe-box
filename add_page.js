@@ -1,16 +1,95 @@
 // add_page.js
 
+//displayRecipes function
+async function displayRecipes(recipeId) {
+    try {
+        const res = await fetch(`/api/get_chosen_recipe?searchTerm=${encodeURIComponent(recipeId)}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (!res.ok) throw new Error("Failed to Load Recipe");
+
+    const json = await res.json();
+    const recipeMeta = json.recipeMeta[0];
+    const recipeSteps = json.recipeSteps;
+    const recipeIngredients = json.recipeIngredients;
+    
+    console.log('recipeMeta: ', recipeMeta);
+    console.log('recipeSteps: ', recipeSteps);
+    console.log('recipeIngredients: ', recipeIngredients);
+
+    populateRecipeMeta(recipeMeta);
+    populateIngredients(recipeIngredients);
+    populateSteps(recipeSteps);
+
+    } catch (err) {
+        console.error("Load recipe failed:", err);
+    }
+}
+
+function populateRecipeMeta(meta) {
+    document.getElementById("addRecipeName").value = meta.recipe_name;
+    document.getElementById("addRecipeDescription").value = meta.recipe_description;
+
+  // If category is returned
+    if (meta.recipe_category) {
+        document.getElementById("categoryDrop").value = meta.recipe_category;
+    }
+}
+
+function populateIngredients(ingredients) {
+    ingredientEntry.innerHTML = "";
+    ingredientNo = 0;
+
+    ingredients
+        .sort((a, b) => a.ingredient_no - b.ingredient_no)
+        .forEach((ing, index) => {
+        addIngredientRow(index, ingredientObjectGlobal);
+
+        document.getElementById(`addIngredientQuantity${index}`).value =
+            ing.amount_whole;
+
+        document.getElementById(`addIngredientFraction${index}`).value =
+            ing.amount_frac;
+
+        document.getElementById(`addUnitDrop${index}`).value =
+            ing.unit_id;
+
+        document.getElementById(`addIngredientDrop${index}`).value =
+            ing.ingredient_id;
+
+        ingredientNo = index;
+        });
+}
+
+function populateSteps(steps) {
+    stepEntry.innerHTML = "";
+    stepNo = 0;
+
+    steps
+        .sort((a, b) => a.step_no - b.step_no)
+        .forEach((step, index) => {
+        addStepRow(index);
+        document.getElementById(`addStep${index}`).value = step.step_text;
+        stepNo = index;
+        });
+}
+
+
 // call functions to get units and ingredients then calls to create first ingredient row
 async function initIngredients() {
     try {
-        const ingredientObject = await getIngredients();
-        ingredientObjectGlobal = ingredientObject;
+        ingredientObjectGlobal = await getIngredients();
 
-        // initialize first rows
         ingredientNo = 0;
-        addIngredientRow(ingredientNo, ingredientObjectGlobal);
         stepNo = 0;
-        addStepRow(stepNo);
+
+        // Only create empty rows if NEW recipe
+        if (!recipeId || recipeId === 'new') {
+            addIngredientRow(ingredientNo, ingredientObjectGlobal);
+            addStepRow(stepNo);
+        }
 
     } catch (err) {
         console.error("Init failed:", err);
@@ -161,6 +240,13 @@ function addStepRow(stepNo)  {
 }
 
 // main script starts here
+const params = new URLSearchParams(window.location.search);
+const recipeId = params.get("id");
+
+if(recipeId && recipeId !== 'new') {
+    displayRecipes(recipeId);
+}
+
 const addRecipeForm     = document.getElementById("addRecipeForm");
 const ingredientEntry   = document.getElementById("ingredientEntry");
 const addIngredientBtn  = document.createElement("button");
@@ -169,11 +255,11 @@ const addStepBtn        = document.createElement("button");
 const submitRecipeBtn   = document.getElementById("submitRecipeBtn");
 const addRecipeMsg      = document.getElementById("addRecipeMsg");
 const newIngredientForm = document.getElementById('addNewIngredient');
-const addIngredientMsg = document.getElementById('addIngredientMsg');
-const searchMsg = document.getElementById('searchMsg');
-const searchForm = document.getElementById('search');
-const listArea = document.getElementById('listArea');
-const searchBtn = document.getElementById('searchBtn');
+const addIngredientMsg  = document.getElementById('addIngredientMsg');
+const searchMsg         = document.getElementById('searchMsg');
+const searchForm        = document.getElementById('search');
+const listArea          = document.getElementById('listArea');
+const searchBtn         = document.getElementById('searchBtn');
 const ingredientSubmitBtn = document.getElementById('ingredientSubmitBtn');
 
 // submit new ingredient form

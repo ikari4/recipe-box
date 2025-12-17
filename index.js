@@ -86,7 +86,7 @@ const addDiv = document.getElementById('index_add');
 // create link to add_page.html in index_add div
 const addLink = document.createElement('a');
 addLink.href = 'add_page.html';
-addLink.textContent = 'Click here to add a new recipe or ingredient';
+addLink.textContent = 'Add New Recipe or Ingredient';
 addDiv.appendChild(addLink);
 
 // event listener for category dropdown

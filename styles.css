@@ -287,7 +287,7 @@ button {
 
 @media screen and (orientation: portrait) {
     #left_add {
-        width: 80%;
+        width: 100%;
     }
     #left_add .form-group button {
         width: 150px;
@@ -295,9 +295,14 @@ button {
     #left_add .form-group input[type="text"] {
         flex: 0 0 100px;
     }
+
 }
+
 @media screen and (orientation: portrait) and (max-width: 800px) {
         .ingredient-row select {
+        width: 100%;
+    }
+        #recipe_list {
         width: 100%;
     }
 }

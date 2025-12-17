@@ -41,6 +41,18 @@ h1 {
     width: 100%;
 }
 
+@media screen and (orientation: portrait) and (max-width: 1000px) {
+  #add_page {
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 400px) {
+    h1, body, #ingredientName {
+        font-size: 10px;
+    }
+}
+
 /* left side of add page */
 #left_add {
     display: flex;

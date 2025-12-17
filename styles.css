@@ -23,7 +23,7 @@ button {
     background-color: #D9D9D980;
     color: black;
     font-size: 20px;
-    width: 200px;
+    width: 150px;
     height: 40px;
     align-items: center;
     justify-content: center;
@@ -97,8 +97,9 @@ button {
 }
 
 #left_add .form-group button {
-  width: 100px;
+  width: 150px;
   font-size: 20px;
+  flex: 0 0 100px;
   color: #3C6E71;
 }
 
@@ -301,6 +302,7 @@ button {
     .ingredient-row, #recipe_info_entry {
         flex-direction: column;
   }
+
 }
 
 @media screen and (max-width: 500px) {
@@ -318,4 +320,11 @@ button {
     #left_add {
         width: 80%;
     }
+    #left_add .form-group button {
+  width: 150px;
+
+}
+  #left_add .form-group input[type="text"] {
+    flex: 0 0 100px;
+}
 }

@@ -143,7 +143,7 @@ function addStepRow(stepNo)  {
     const addStep = document.createElement("textarea")
     const row = document.createElement("div");
     row.className = "step-row";
-    addStep.value = "Enter Step Text"
+    addStep.placeholder = "Enter Step Text"
     addStep.rows = 3;
     addStep.name = `addStep${stepNo}`;
     addStep.id = `addStep${stepNo}`;

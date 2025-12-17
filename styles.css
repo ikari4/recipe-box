@@ -12,6 +12,23 @@ h1 {
     font-size: 28px;
 }
 
+button {
+    appearance: none;         /* Standard reset */
+    -webkit-appearance: none; /* iOS Safari reset */
+    border: 1px solid #ccc;   
+    border-radius: 6px;  
+    padding: 0;         
+    cursor: pointer;
+    display: flex;
+    background-color: D9D9D980;
+    color: white;
+    font-size: 20px;
+    width: 80px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
 /* index page */
 #index_div {
     width: 100%;

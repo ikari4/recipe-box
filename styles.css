@@ -5,7 +5,6 @@ body {
     font-size: 20px;
     color: black;
     background-color: #D9D9D980;
-
 }
 
 h1 {
@@ -272,7 +271,6 @@ button {
     #left_add, #right_add {
         width: 100%;
     }
-
 }
 
 @media screen and (max-width: 500px) {
@@ -302,4 +300,10 @@ button {
         .ingredient-row select {
         width: 100%;
     }
+}
+
+@media screen and (max-width: 1100px) {
+    .ingredient-row select, #categoryDrop {
+        background-color: #FFFFFF;
+}
 }

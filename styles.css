@@ -20,8 +20,8 @@ button {
     padding: 0;         
     cursor: pointer;
     display: flex;
-    background-color: #D9D9D980;
-    color: black;
+    background-color: #3C6E71;
+    color: #FFFFFF;
     font-size: 20px;
     width: 150px;
     height: 40px;
@@ -58,13 +58,6 @@ button {
     width: 100%;
 }
 
-
-/* @media screen and (max-width: 400px) {
-    h1, body, #ingredientName {
-        font-size: 10px;
-    }
-} */
-
 /* left side of add page */
 #left_add {
     display: flex;
@@ -82,53 +75,49 @@ button {
 }
 
 #left_add .form-group {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  width: 100%;
-  margin-bottom: 0.75rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+    margin-bottom: 0.75rem;
 }
 
 #left_add .form-group input[type="text"] {
-  flex: 1;
-  padding: 0.4rem;
-  box-sizing: border-box;
-  color: #3C6E71;
+    flex: 1;
+    padding: 0.4rem;
+    box-sizing: border-box;
+    color: #3C6E71;
 }
 
 #left_add .form-group button {
-  width: 150px;
-  font-size: 20px;
-  flex: 0 0 100px;
-  color: #3C6E71;
-}
-
-#empty_div {
-    width: 5%;
+    width: 150px;
+    font-size: 20px;
+    flex: 0 0 100px;
 }
 
 /* right side of add page */
 #right_add {
+    width: 50%;
     font-size: 20px;
     color: #3C6E71;
 }
 
 #add_recipe_div {
-  width: 100%;
+    width: 100%;
 }
 
 #addRecipeForm {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  font-size: 20px;
-  width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 20px;
+    width: 100%;
 }
 
 #recipe_info_entry {
-  display: flex;
-  gap: 1rem;
-  width: 100%;
+    display: flex;
+    gap: 1rem;
+    width: 100%;
 }
 
 #addRecipeName {
@@ -143,47 +132,47 @@ button {
 }
 
 #add_category {
-  flex: 1;
+    flex: 1;
 }
 
 #categoryDrop {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 20px;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 20px;
     color: #3C6E71;
 }
 
 #ingredientEntry {
-  width: 100%;
+    width: 100%;
 }
 
 .ingredient-row,
 .step-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+    padding-bottom: 0.5rem;
 }
 
 .ingredient-row select {
-  font-size: 20px;
+    font-size: 20px;
     color: #3C6E71;
 }
 
 .step-row textarea {
-  flex: 1;
-  font-size: 20px;
+    flex: 1;
+    font-size: 20px;
     color: #3C6E71;
 }
 
 .ingredient-row button,
 .step-row button {
-  width: 40px;
-  height: 40px;
-  font-size: 20px;
-  flex: 0 0 40px;
-  text-align: center;
-    color: #3C6E71;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    flex: 0 0 40px;
+    text-align: center;
 }
 
 .ingredient-row select:last-of-type {
@@ -192,39 +181,24 @@ button {
 }
 
 #addRecipeDescription {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 20px;
-  box-sizing: border-box;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 20px;
+    box-sizing: border-box;
     color: #3C6E71;
 }
 
 #stepEntry {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 #stepEntry textarea {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 20px;
-  box-sizing: border-box;
-}
-
-.ingredient-row select {
-  font-size: 20px;
-    color: #3C6E71;
-}
-
-.ingredient-row button {
-  font-size: 20px;
-    color: #3C6E71;
-}
-
-.step-row button {
+    width: 100%;
+    padding: 0.5rem;
     font-size: 20px;
-    color: #3C6E71;
+    box-sizing: border-box;
 }
 
 #submitRecipeBtn {
@@ -232,7 +206,6 @@ button {
     padding: 0.6rem 1.5rem;
     font-size: 20px;
     margin-top: 1rem;
-    color: #3C6E71;
 }
 
 
@@ -272,44 +245,42 @@ button {
 }
 
 .results-table th:nth-child(2) {
-  width: 5%;
-  font-size: 40px;
+    width: 5%;
+    font-size: 40px;
 }
 
 .del-Btn button {
-  font-size: 18px;
-  height: 28px;
-  width: 28px;
-  background-color: red;
-  border: 1px solid gray;
-  color: white;
-  font-weight: bold;
-  border-radius: 50%;
+    font-size: 18px;
+    height: 28px;
+    width: 28px;
+    background-color: red;
+    border: 1px solid gray;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
 }
 
 .deletedRow {
-  text-decoration: line-through;
-  background-color: darkgray;
+    text-decoration: line-through;
+    background-color: darkgray;
 }
 
 @media screen and (max-width: 900px) {
-  #add_page {
-    flex-direction: column;
-  }
+    #add_page {
+        flex-direction: column;
+    }
+    #left_add, #right_add {
+        width: 100%;
+    }
+
 }
 
 @media screen and (max-width: 500px) {
     .ingredient-row, #recipe_info_entry {
         flex-direction: column;
   }
-
 }
 
-@media screen and (max-width: 500px) {
-    #left_add {
-        width: 100%;
-    }
-}
 @media screen and (orientation: landscape) and (min-width: 500px) {
     .ingredient-row {
         flex-direction: row;
@@ -321,10 +292,14 @@ button {
         width: 80%;
     }
     #left_add .form-group button {
-  width: 150px;
-
+        width: 150px;
+    }
+    #left_add .form-group input[type="text"] {
+        flex: 0 0 100px;
+    }
 }
-  #left_add .form-group input[type="text"] {
-    flex: 0 0 100px;
-}
+@media screen and (orientation: portrait) and (max-width: 800px) {
+        .ingredient-row select {
+        width: 100%;
+    }
 }

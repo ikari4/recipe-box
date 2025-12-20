@@ -56,9 +56,9 @@ function populateIngredients(ingredients) {
 
         document.getElementById(`addIngredientDrop${index}`).value =
             ing.ingredient_id;
-
-        ingredientNo = index;
         });
+
+    ingredientNo = ingredients.length - 1;
 }
 
 // populateSteps function
@@ -71,8 +71,8 @@ function populateSteps(steps) {
         .forEach((step, index) => {
         addStepRow(index);
         document.getElementById(`addStep${index}`).value = step.step_text;
-        stepNo = index;
         });
+    stepNo = steps.length -1;        
 }
 
 // call functions to get units and ingredients then calls to create first ingredient row

@@ -17,6 +17,18 @@ export default async function handler(req, res) {
                 return res.status(400).json({ error: "Invalid recipe array" });
             }
 
+            // If there are no steps, do nothing
+            if (!stepData.length) return res.status(200).json({ success: true });
+
+            const recipe_id = stepData[0].recipe_id;
+
+            // Delete existing steps for this recipe (safe even for new recipes)
+            await turso.execute({
+                sql: `DELETE FROM recipe_steps WHERE recipe_id = ?`,
+                args: [recipe_id],
+            });
+
+            // Insert the new steps
             for (const item of stepData) {
                 const sql = `
                     INSERT INTO recipe_steps (
@@ -25,15 +37,13 @@ export default async function handler(req, res) {
                         step_no
                     ) VALUES (?, ?, ?)
                 `;
-
                 const args = [
                     item.recipe_id,
                     item.step_text,
                     item.step_no
                 ];
-
                 await turso.execute({ sql, args });
-                }
+            }
 
             return res.status(200).json({ success: true });
 
@@ -43,5 +53,5 @@ export default async function handler(req, res) {
         }
     }
 
-  res.status(405).json({ error: "Method not allowed" });
+    res.status(405).json({ error: "Method not allowed" });
 }

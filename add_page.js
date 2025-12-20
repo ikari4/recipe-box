@@ -230,6 +230,9 @@ function addStepRow(stepNo)  {
 }
 
 // main script starts here
+let ingredientObjectGlobal;
+var ingredientNo = 0;
+var stepNo = 0;
 const params = new URLSearchParams(window.location.search);
 const recipeId = params.get("id");
 
@@ -238,7 +241,7 @@ const recipeId = params.get("id");
     if(recipeId && recipeId !== 'new') {
         await displayRecipes(recipeId);
     }
-})
+})();
 
 const addRecipeForm     = document.getElementById("addRecipeForm");
 const ingredientEntry   = document.getElementById("ingredientEntry");
@@ -299,7 +302,6 @@ searchForm.addEventListener('submit', async (e) => {
     listArea.innerHTML = '';
     e.preventDefault();
     const searchIngredient = searchForm.searchIngredient.value.trim()
-    console.log(searchIngredient);
 
     try {
         const res = await fetch(`/api/get_search?searchTerm=${encodeURIComponent(searchIngredient)}`, {
@@ -398,10 +400,6 @@ searchForm.addEventListener('submit', async (e) => {
         addIngredientMsg.textContent = '';
     }
 });
-
-// globals to hold fetched lookup data and initiate page
-let ingredientObjectGlobal;
-initIngredients();
 
 // display placeholders for counters (rows are created after fetch completes)
 var ingredientNo = 0;

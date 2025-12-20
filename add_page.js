@@ -130,7 +130,6 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
     quantLabel.selected = true;
     quantLabel.defaultSelected = true;
     addIngredientQuantity.appendChild(quantLabel);
-    // ingredientEntry.appendChild(addIngredientQuantity);
     wholes.forEach(value => {
         const wholeOpt = document.createElement("option");
         wholeOpt.value = value;
@@ -154,7 +153,6 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
         fracOpt.textContent = value;
         addIngredientFraction.appendChild(fracOpt);
     });
-    // ingredientEntry.appendChild(addIngredientFraction);
 
     // create unit drop
     const units = ["tsp", "tbsp", "fl oz", "cup", "pt", "qt", 
@@ -224,17 +222,11 @@ function addStepRow(stepNo)  {
     addStep.rows = 3;
     addStep.name = `addStep${stepNo}`;
     addStep.id = `addStep${stepNo}`;
-    // stepEntry.appendChild(addStep);
 
-    // create add an ingredient button
     addStepBtn.type = "button";
     addStepBtn.textContent = "+";
-    // stepEntry.appendChild(addStepBtn);
     row.append(addStep, addStepBtn);
     stepEntry.appendChild(row);
-    // add line break
-    // stepEntry.appendChild(document.createElement("br"));
-
 }
 
 // main script starts here
@@ -242,7 +234,7 @@ const params = new URLSearchParams(window.location.search);
 const recipeId = params.get("id");
 
 if(recipeId && recipeId !== 'new') {
-    displayRecipes(recipeId);
+    await displayRecipes(recipeId);
 }
 
 const addRecipeForm     = document.getElementById("addRecipeForm");
@@ -457,39 +449,39 @@ addRecipeForm.addEventListener('submit', async (e) => {
 
     // get all the entered ingredient info and log
     const ingredientData = [];
+    const rows = ingredientEntry.querySelectorAll(".ingredient-row");
 
-    for (let i = 0; i <= ingredientNo; i++) {
-        const quantityEl = document.getElementById(`addIngredientQuantity${i}`);
-        const fractionEl = document.getElementById(`addIngredientFraction${i}`);
-        const unitEl     = document.getElementById(`addUnitDrop${i}`);
-        const ingredEl   = document.getElementById(`addIngredientDrop${i}`);
+    rows.forEach((row, index) => {
+        const quantityEl = row.querySelector(`[id^="addIngredientQuantity"]`);
+        const fractionEl = row.querySelector(`[id^="addIngredientFraction"]`);
+        const unitEl     = row.querySelector(`[id^="addUnitDrop"]`);
+        const ingredEl   = row.querySelector(`[id^="addIngredientDrop"]`);
 
-        if (ingredEl.value === "") continue;
+        if (!ingredEl.value) return;
 
         ingredientData.push({
-            recipe_id: recipe_id,
-            ingredient_no: i, 
+            recipe_id,
+            ingredient_no: index,
             amount_whole: quantityEl.value,
             amount_frac: fractionEl.value,
             unit_id: unitEl.value,
             ingredient_id: Number(ingredEl.value)
         });
-    }
+    });
 
     // get all the entered step info and log
     const stepData = [];
+    const stepEls = stepEntry.querySelectorAll("textarea");
 
-    for (let i = 0; i <= stepNo; i++) {
-        const stepEl = document.getElementById(`addStep${i}`);
-
-        if (stepEl.value === "") continue;
+    stepEls.forEach((el, index) => {
+        if (!el.value.trim()) return;
 
         stepData.push({
-            recipe_id: recipe_id,
-            step_no: i, 
-            step_text: stepEl.value,
+            recipe_id,
+            step_no: index,
+            step_text: el.value.trim()
         });
-    }
+    });
 
     // log new recipe ingredient data
     const ingredientRes = await fetch("/api/post_ingredient_data", {

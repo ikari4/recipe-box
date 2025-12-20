@@ -358,6 +358,7 @@ button {
   }
     #recipe_ingredients, #recipe_steps {
         width: 100%;
+        padding: 0 0;
     }
 }
 

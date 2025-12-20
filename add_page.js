@@ -233,9 +233,12 @@ function addStepRow(stepNo)  {
 const params = new URLSearchParams(window.location.search);
 const recipeId = params.get("id");
 
-if(recipeId && recipeId !== 'new') {
-    await displayRecipes(recipeId);
-}
+(async function initPage() {
+    await initIngredients();
+    if(recipeId && recipeId !== 'new') {
+        await displayRecipes(recipeId);
+    }
+})
 
 const addRecipeForm     = document.getElementById("addRecipeForm");
 const ingredientEntry   = document.getElementById("ingredientEntry");

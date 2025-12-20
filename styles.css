@@ -335,12 +335,12 @@ button {
 
 #recipe_ingredients {
     width: 50%;
-    padding-left: 40px;
+    padding: 40px 0px;
 }
 
 #recipe_steps {
     width: 50%;
-    padding-left: 40px;
+    padding: 40px 0px;
 }
 
 @media screen and (max-width: 900px) {

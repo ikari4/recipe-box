@@ -137,7 +137,7 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
         wholeOpt.textContent = value;
         addIngredientQuantity.appendChild(wholeOpt);
     });
-    const fractions = ["1/8", "1/4", "1/3", "1/2", "2/3", "3/4"];
+    const fractions = ["0","1/8", "1/4", "1/3", "1/2", "2/3", "3/4"];
     const addIngredientFraction = document.createElement("select");
     addIngredientFraction.name=`addIngredientFraction${ingredientNo}`;
     addIngredientFraction.id=`addIngredientFraction${ingredientNo}`;

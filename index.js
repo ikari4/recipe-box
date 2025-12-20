@@ -17,10 +17,11 @@ async function getRecipes(catDropdownValue) {
         if (res.ok) {
             msg.textContent = `Loaded ${recipes.items.length} ${catDropdownValue}`
             const table = document.createElement('table');
-            table.className = 'results-table';
+            table.className = 'results-table2';
             table.innerHTML = `
                 <thead>
                     <tr>
+                        <th>&#9998</th>
                         <th>Results</th>
                         <th>&#128465</th>
                     </tr>
@@ -29,6 +30,8 @@ async function getRecipes(catDropdownValue) {
             const tbody = document.createElement('tbody');
             recipes.items.forEach(r => {
                 const tr = document.createElement('tr');
+                const editMe = document.createElement('button');
+                editMe.textContent = '✓';
                 const deleteMe = document.createElement('button');
                 deleteMe.textContent = 'X';
 
@@ -56,17 +59,25 @@ async function getRecipes(catDropdownValue) {
                     }
                 });
 
+                // when edit button is clicked, go to add page with recipe
+                editMe.addEventListener('click', async() => {
+                    window.location.href = `add_page.html?id=${r.recipe_id}`;
+                });
+
                 const td1 = document.createElement('td');
-                const link = document.createElement('a');
-                // link.href = `recipe.html?id=${r.recipe_id}`;
-                link.href = `add_page.html?id=${r.recipe_id}`;
-                link.textContent = r.recipe_name;
-                td1.appendChild(link);
+                td1.className = 'edit-Btn';
+                td1.appendChild(editMe);
                 tr.appendChild(td1);
                 const td2 = document.createElement('td');
-                td2.className = 'del-Btn';
-                td2.appendChild(deleteMe)
+                const link = document.createElement('a');
+                link.href = `recipe.html?id=${r.recipe_id}`;
+                link.textContent = r.recipe_name;
+                td2.appendChild(link);
                 tr.appendChild(td2);
+                const td3 = document.createElement('td');
+                td3.className = 'del-Btn';
+                td3.appendChild(deleteMe)
+                tr.appendChild(td3);
                 tbody.appendChild(tr);
             });
             table.appendChild(tbody);

@@ -248,6 +248,39 @@ button {
     font-size: 40px;
 }
 
+.results-table2 {
+    width: 100%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    font-family: inherit;
+}
+
+.results-table2 th,
+.results-table2 td {
+    padding: 10px 12px;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.results-table2 thead th {
+    background: #fafafa;
+    font-weight: 600;
+}
+
+.results-table2 tbody tr:nth-child(even) {
+    background: #ffffff;
+}
+
+.results-table2 tbody tr:nth-child(odd) {
+    background: #3c6e7140;
+}
+
+.results-table2 th:nth-child(1), th:nth-child(3) {
+    width: 5%;
+    font-size: 40px;
+}
+
 .del-Btn button {
     font-size: 18px;
     height: 28px;
@@ -259,9 +292,55 @@ button {
     border-radius: 50%;
 }
 
+.edit-Btn button {
+    font-size: 18px;
+    height: 28px;
+    width: 28px;
+    background-color: #284b63;
+    border: 1px solid gray;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+}
+
 .deletedRow {
     text-decoration: line-through;
     background-color: darkgray;
+}
+
+#recipe_outer {
+    display: flex;
+    flex-direction: column;
+}
+
+#recipe_top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0px;   
+}
+
+#recipe_description {
+    height: 30px;
+    font-size: 16px;
+    padding: 10px 0px;  
+}
+
+#recipe_main {
+    display: flex;
+    flex-direction: row;
+    width: 100%
+}
+
+#recipe_ingredients {
+    width: 50%;
+    padding-left: 40px;
+}
+
+#recipe_steps {
+    width: 50%;
+    padding-left: 40px;
 }
 
 @media screen and (max-width: 900px) {
@@ -274,9 +353,12 @@ button {
 }
 
 @media screen and (max-width: 500px) {
-    .ingredient-row, #recipe_info_entry {
+    .ingredient-row, #recipe_info_entry, #recipe_main {
         flex-direction: column;
   }
+    #recipe_ingredients, #recipe_steps {
+        width: 100%;
+    }
 }
 
 @media screen and (orientation: landscape) and (min-width: 500px) {

@@ -14,10 +14,6 @@ async function displayRecipes(recipeId) {
     const recipeMeta = json.recipeMeta[0];
     const recipeSteps = json.recipeSteps;
     const recipeIngredients = json.recipeIngredients;
-    
-    console.log('recipeMeta: ', recipeMeta);
-    console.log('recipeSteps: ', recipeSteps);
-    console.log('recipeIngredients: ', recipeIngredients);
 
     populateRecipeMeta(recipeMeta);
     populateIngredients(recipeIngredients);
@@ -28,6 +24,7 @@ async function displayRecipes(recipeId) {
     }
 }
 
+// populateRecipeMeta function
 function populateRecipeMeta(meta) {
     document.getElementById("addRecipeName").value = meta.recipe_name;
     document.getElementById("addRecipeDescription").value = meta.recipe_description;
@@ -38,6 +35,7 @@ function populateRecipeMeta(meta) {
     }
 }
 
+// populateIngredients function
 function populateIngredients(ingredients) {
     ingredientEntry.innerHTML = "";
     ingredientNo = 0;
@@ -63,6 +61,7 @@ function populateIngredients(ingredients) {
         });
 }
 
+// populateSteps function
 function populateSteps(steps) {
     stepEntry.innerHTML = "";
     stepNo = 0;
@@ -75,7 +74,6 @@ function populateSteps(steps) {
         stepNo = index;
         });
 }
-
 
 // call functions to get units and ingredients then calls to create first ingredient row
 async function initIngredients() {
@@ -139,7 +137,7 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
         wholeOpt.textContent = value;
         addIngredientQuantity.appendChild(wholeOpt);
     });
-    const fractions = ["0", "1/8", "1/4", "1/3", "1/2", "2/3", "3/4"];
+    const fractions = ["1/8", "1/4", "1/3", "1/2", "2/3", "3/4"];
     const addIngredientFraction = document.createElement("select");
     addIngredientFraction.name=`addIngredientFraction${ingredientNo}`;
     addIngredientFraction.id=`addIngredientFraction${ingredientNo}`;

@@ -1,8 +1,12 @@
 // index.js
+// displays category dropdown on frontpage of site
+// listens for selection and fetches/displays list of recipes
+// each recipe has options to edit, delete or view
 
-// getRecipes function
+// getRecipes function: takes selected catorgy and displays list of recipes
 async function getRecipes(catDropdownValue) {
 
+    // if user wants to add a new recipe, this sends them to the add page
     if(catDropdownValue === 'new') {
         window.location.href =`add_page.html?id=${catDropdownValue}`;
     }
@@ -10,10 +14,12 @@ async function getRecipes(catDropdownValue) {
     msg.innerHTML = `Loading… ${catDropdownValue}`;
     recipeList.innerHTML = "";
 
+    // otherwise, query the database to get the list of recipes in the chosen category
     try {
         const res = await fetch(`/api/get_recipes?category=${encodeURIComponent(catDropdownValue)}`);
         const recipes = await res.json();
         
+        // build the results table with options to edit, view or delete each recipe
         if (res.ok) {
             msg.textContent = `Loaded ${recipes.items.length} ${catDropdownValue}`
             const table = document.createElement('table');
@@ -98,13 +104,7 @@ const msg = document.getElementById('index_msg');
 const recipeList = document.getElementById('recipe_list');
 const addDiv = document.getElementById('index_add');
 
-// create link to add_page.html in index_add div
-// const addLink = document.createElement('a');
-// addLink.href = 'add_page.html';
-// addLink.textContent = 'Add New Recipe or Ingredient';
-// addDiv.appendChild(addLink);
-
-// event listener for category dropdown
+// event listener for category dropdown set up on index.html
 const catDropdown = document.getElementById('category_drop');
 catDropdown.addEventListener('change', () => {
     getRecipes(catDropdown.value);

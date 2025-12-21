@@ -40,7 +40,7 @@ function populateIngredients(ingredients) {
     ingredientEntry.innerHTML = "";
     ingredientNo = 0;
 
-    ingredients
+    (ingredients || [])
         .sort((a, b) => a.ingredient_no - b.ingredient_no)
         .forEach((ing, index) => {
         addIngredientRow(index, ingredientObjectGlobal);
@@ -75,15 +75,16 @@ function populateSteps(steps) {
     stepNo = steps.length -1;        
 }
 
-// call functions to get units and ingredients then calls to create first ingredient row
+// call functions to get ingredients then calls to create first ingredient row (only if new recipe)
 async function initIngredients() {
     try {
-        ingredientObjectGlobal = await getIngredients();
+        const ingredientsArray = await getIngredients();
+        ingredientObjectGlobal = { ingredients: ingredientsArray };
 
         ingredientNo = 0;
         stepNo = 0;
 
-        // Only create empty rows if NEW recipe
+        // only create empty rows if NEW recipe
         if (!recipeId || recipeId === 'new') {
             addIngredientRow(ingredientNo, ingredientObjectGlobal);
             addStepRow(stepNo);
@@ -98,10 +99,10 @@ async function initIngredients() {
 async function getIngredients() {
     try {
         const res = await fetch(`api/get_ingredients`);
-        const ingredients = await res.json();
+        const json = await res.json();
         
         if (res.ok) {
-            return(ingredients);
+            return Array.isArray(json.ingredients) ? json.ingredients : [];
         } else {
             addRecipeMsg.textContent = "Error";
         };
@@ -174,7 +175,6 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
         unitOpt.textContent = unit;
         addUnitDrop.appendChild(unitOpt);
     });
-    // ingredientEntry.appendChild(addUnitDrop);
     
     // create ingredient drop
     const addIngredientDrop = document.createElement("select");
@@ -186,7 +186,11 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
     ingrLabel.disabled = true;
     ingrLabel.selected = true;
     addIngredientDrop.appendChild(ingrLabel);
-    ingredientObject.ingredients.forEach(ingredient => {
+    const ingredientsList = Array.isArray(ingredientObject?.ingredients)
+        ? ingredientObject.ingredients
+        : [];
+
+    ingredientsList.forEach(ingredient => {
         const ingrOpt = document.createElement("option");
         ingrOpt.value = ingredient.ingredient_id;
         ingrOpt.textContent = ingredient.ingredient_name;
@@ -236,6 +240,7 @@ var stepNo = 0;
 const params = new URLSearchParams(window.location.search);
 const recipeId = params.get("id");
 
+// 
 (async function initPage() {
     await initIngredients();
     if(recipeId && recipeId !== 'new') {
@@ -275,6 +280,15 @@ newIngredientForm.addEventListener('submit', async (e) => {
         });
 
         const json = await res.json();
+        
+        // After a new ingredient is successfully added to DB
+        if (res.ok) {
+            const newIngredient = json.newIngredient;
+            ingredientObjectGlobal.ingredients.push(newIngredient);
+            addIngredientMsg.textContent = 'Saved — thank you!';
+            newIngredientForm.reset();
+        }
+        
         if (res.ok) {
             ingredientSubmitBtn.disabled = false;
             ingredientSubmitBtn.textContent = 'Submit';

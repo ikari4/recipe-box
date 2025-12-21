@@ -43,7 +43,8 @@ export default async function handler(req, res) {
                 amount_whole,
                 amount_frac,
                 unit_id
-                FROM recipe_ingredients WHERE recipe_id = ?`;
+                FROM recipe_ingredients WHERE recipe_id = ?
+                ORDER BY ingredient_no`;
             const ingr1Results = await turso.execute({                 
                 sql: ingrSql1,
                 args: [searchTerm] 

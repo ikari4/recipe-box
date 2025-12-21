@@ -1,4 +1,5 @@
 <!-- add_page.html -->
+<!-- page has three sections: add new ingredient, search for ingredient, enter new recipe -->
 <!doctype html>
 <html>
 <head>
@@ -10,11 +11,11 @@
 <body>
     <div id="add_page">    
         <div id="left_add">
+            <!-- add a new ingredient -->
             <div id="new_ingredient">
                 <h1>Add New Ingredient</h1>
                 <form id="addNewIngredient">
                     <div class="form-group">
-                        <!-- <label for="ingredientName">Ingredient:</label> -->
                         <input type="text" name="ingredientName" id="ingredientName">
                         <button type="submit" id="ingredientSubmitBtn">Submit</button>
                     </div>
@@ -23,11 +24,11 @@
                 <div id="addIngredientMsg" role="status"></div>
                 <hr>
             </div>
+            <!-- search for an ingredient -->
             <div id="search_ingredient">
                 <h1>Ingredient Search</h1>
                 <form id="search">
                     <div class="form-group">
-                        <!-- <label for="searchIngredient">Search:</label> -->
                         <input type="text" name="searchIngredient" id="searchIngredient">
                         <button type="submit" id="searchBtn">Search</button>
                     </div>
@@ -40,16 +41,17 @@
         </div>
         <div id="right_add">
             <!-- add a new recipe to database -->
+            <!-- locations for recipe name, category and description -->
+            <!-- divs set up for js to add ingredient and steps -->
             <h1>Add New Recipe</h1>
             <div id="add_recipe_div">
                 <form id="addRecipeForm">
                     <!-- add recipe name, category and description -->
                     <div id="recipe_info_entry">
-                        <!-- <label for="addRecipeName">Recipe Name:</label> -->
                         <input type="text" id="addRecipeName" name="addRecipeName" placeholder="Recipe Name" required>
                         <div class="select_div" id="add_category">
                             <select name="categoryDrop" class="dropdown" id="categoryDrop" required>
-                                <option disabled selected>Category</option>
+                                <option value="" disabled selected hidden>Category</option>
                                 <option value="appetizers">Appetizers</option>
                                 <option value="soups">Soups</option>
                                 <option value="breakfasts">Breakfasts</option>

@@ -14,21 +14,38 @@ export default async function handler(req, res) {
   try {
 
     if (req.method === 'POST') {
-      const { ingredientName } = req.body || {};
+        const { ingredientName } = req.body || {};
 
-      if (!isValidString(ingredientName)) {
-        res.status(400).json({ error: 'Invalid input' });
+        if (!isValidString(ingredientName)) {
+            res.status(400).json({ error: 'Invalid input' });
+            return;
+        }
+
+        await turso.execute({
+            sql: `INSERT INTO ingredients (ingredient_name)
+                VALUES (?)`,
+            args: [ingredientName.trim()],
+        });
+
+        const lastIdResult = await turso.execute({
+            sql: `SELECT last_insert_rowid() AS ingredient_id`,
+        });
+
+        const newIngredientId = lastIdResult?.rows?.[0]?.ingredient_id;
+
+        if (!newIngredientId) {
+            res.status(500).json({ error: 'Could not get new ingredient ID' });
+            return;
+        }
+
+        res.status(200).json({
+            ok: true,
+            newIngredient: {
+                ingredient_id: newIngredientId,
+                ingredient_name: ingredientName.trim(),
+            },
+        });
         return;
-      }
-
-      await turso.execute({
-        sql: `INSERT INTO ingredients (ingredient_name)
-              VALUES (?)`,
-        args: [ingredientName.trim()],
-      });
-
-      res.status(200).json({ ok: true });
-      return;
     }
       
     // if any other HTTP method → not allowed

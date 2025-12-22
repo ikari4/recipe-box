@@ -260,6 +260,14 @@ const listArea          = document.getElementById('listArea');
 const searchBtn         = document.getElementById('searchBtn');
 const ingredientSubmitBtn = document.getElementById('ingredientSubmitBtn');
 
+document.getElementById('backBtnAdd').addEventListener('click', () => {
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        window.location.href = '/index.html';
+    }
+});
+
 // submit new ingredient form
 newIngredientForm.addEventListener('submit', async (e) => {
     ingredientSubmitBtn.disabled = true;

@@ -104,7 +104,7 @@ async function displayRecipes(recipeId) {
 const params = new URLSearchParams(window.location.search);
 const recipeId = params.get("id");
 
-document.getElementById('backBtn').addEventListener('click', () => {
+document.getElementById('backBtnRecipe').addEventListener('click', () => {
     if (window.history.length > 1) {
         window.history.back();
     } else {

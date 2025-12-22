@@ -1,5 +1,6 @@
 // add_page.js
 
+// initPage function on every page load
 async function initPage() {
     await initIngredients();
     await displayRecipes(recipeId);
@@ -84,7 +85,7 @@ function populateSteps(steps) {
     stepNo = steps.length -1;        
 }
 
-// call functions to get ingredients then calls to create first ingredient row (only if new recipe)
+// call functions to get ingredients then calls to create first ingredient row
 async function initIngredients() {
     try {
         const ingredientsArray = await getIngredients();
@@ -92,12 +93,6 @@ async function initIngredients() {
 
         ingredientNo = 0;
         stepNo = 0;
-
-        // only create empty rows if NEW recipe
-        // if (!recipeId || recipeId === 'new') {
-        //     addIngredientRow(ingredientNo, ingredientObjectGlobal);
-        //     addStepRow(stepNo);
-        // }
 
     } catch (err) {
         console.error("Init failed:", err);
@@ -205,13 +200,11 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
         ingrOpt.textContent = ingredient.ingredient_name;
         addIngredientDrop.appendChild(ingrOpt);
     });
-    // ingredi/entEntry.appendChild(addIngredientDrop);
 
     // create add an ingredient button
     addIngredientBtn.type = "button";
     addIngredientBtn.textContent = "+";
-    // ingredientEntry.appendChild(addIngredientBtn);
-    
+   
     row.append(
         addIngredientQuantity,
         addIngredientFraction,
@@ -220,9 +213,6 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
         addIngredientBtn
     );
     ingredientEntry.appendChild(row);
-    
-    // add line break
-    // ingredientEntry.appendChild(document.createElement("br"));
 }
 
 // adds steps row to page
@@ -248,24 +238,10 @@ function addStepRow(stepNo)  {
 let ingredientObjectGlobal;
 var ingredientNo = 0;
 var stepNo = 0;
+
 // stope recipe id sent from index.html
 const params = new URLSearchParams(window.location.search);
 const recipeId = params.get("id");
-
-// call to get array of all ingredients in DB
-// puts in one empty ingredient row if in new mode or...
-// loads selected recipe if in edit mode
-// (async function initPage() {
-//     await initIngredients();
-//     if(recipeId && recipeId !== 'new') {
-//         await displayRecipes(recipeId);
-//     }
-// })();
-
-// (async function initPage() {
-//     await initIngredients();
-//     await displayRecipes(recipeId);
-// })();
 
 initPage();
 
@@ -409,7 +385,6 @@ searchForm.addEventListener('submit', async (e) => {
 
                 tbody.appendChild(tr);
 
-
             });
             table.appendChild(tbody);
             listArea.appendChild(table);
@@ -419,16 +394,13 @@ searchForm.addEventListener('submit', async (e) => {
             searchBtn.textContent = 'Search';
             searchForm.reset();
 
-                // when delete button is clicked, delete from DB
-
-
         } else {
             searchBtn.disabled = false;
             searchBtn.textContent = 'Search';
             searchMsg.textContent = 'Error: ' + (json?.error || res.statusText);
             addIngredientMsg.textContent = '';
-            
-        }
+         }
+         
     } catch (err) {
         searchBtn.disabled = false;
         searchBtn.textContent = 'Search';
@@ -436,11 +408,6 @@ searchForm.addEventListener('submit', async (e) => {
         addIngredientMsg.textContent = '';
     }
 });
-
-// display placeholders for counters (rows are created after fetch completes)
-// I commented these out; I think they are not necessary
-// var ingredientNo = 0;
-// var stepNo = 0;
 
 // event listenter to add a new ingredient row
 addIngredientBtn.addEventListener("click", () => {
@@ -463,27 +430,59 @@ addRecipeForm.addEventListener('submit', async (e) => {
     const categoryDrop          = document.getElementById("categoryDrop");
     const addRecipeDescription  = document.getElementById("addRecipeDescription");
 
-    // log recipe metadata and get recipe_id back
-    
-    const addRecipeData = [];
-    addRecipeData.push({
-        recipe_name: addRecipeName.value,
-        recipe_category: categoryDrop.value,
-        recipe_description: addRecipeDescription.value
-    });
+    // determine whether we are creating a new recipe or updating an existing one
+    let recipe_id;
 
-    const recipeRes = await fetch("/api/post_recipe_metadata", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            addRecipeData: addRecipeData
-        })
-    });
+    if (recipeId && recipeId !== 'new') {
+        // editing existing recipe — update metadata
+        recipe_id = Number(recipeId);
+        try {
+            const patchRes = await fetch('/api/update_recipe_metadata', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    recipe_id,
+                    recipe_name: addRecipeName.value,
+                    recipe_category: categoryDrop.value,
+                    recipe_description: addRecipeDescription.value
+                })
+            });
 
-    const recipeJson = await recipeRes.json();
-    const recipe_id = recipeJson.recipe_id;
+            const patchJson = await patchRes.json();
+            if (!patchRes.ok) throw new Error(patchJson?.error || 'Update failed');
+        } catch (err) {
+            submitRecipeBtn.disabled = false;
+            submitRecipeBtn.textContent = 'Submit';
+            addRecipeMsg.textContent = 'Update failed: ' + err.message;
+            return;
+        }
+
+    } else {
+        // new recipe — insert and get recipe_id back
+        const addRecipeData = [];
+        addRecipeData.push({
+            recipe_name: addRecipeName.value,
+            recipe_category: categoryDrop.value,
+            recipe_description: addRecipeDescription.value
+        });
+
+        try {
+            const recipeRes = await fetch('/api/post_recipe_metadata', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ addRecipeData: addRecipeData })
+            });
+
+            const recipeJson = await recipeRes.json();
+            if (!recipeRes.ok) throw new Error(recipeJson?.error || 'Insert failed');
+            recipe_id = recipeJson.recipe_id;
+        } catch (err) {
+            submitRecipeBtn.disabled = false;
+            submitRecipeBtn.textContent = 'Submit';
+            addRecipeMsg.textContent = 'Save failed: ' + err.message;
+            return;
+        }
+    }
 
     // get all the entered ingredient info and log
     const ingredientData = [];
@@ -534,15 +533,11 @@ addRecipeForm.addEventListener('submit', async (e) => {
 
     const ingredientJson = await ingredientRes.json();
 
-    // log new recipe ingredient data
-    const stepRes = await fetch("/api/post_step_data", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            stepData: stepData
-        })
+    // log new recipe step data
+    const stepRes = await fetch('/api/post_step_data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stepData: stepData })
     });
 
     const stepJson = await stepRes.json();
@@ -550,9 +545,14 @@ addRecipeForm.addEventListener('submit', async (e) => {
     if (ingredientJson.success || stepJson.success) {
         submitRecipeBtn.disabled = false;
         submitRecipeBtn.textContent = 'Submit';
-        alert('Recipe added successfully');
+        const verb = (recipeId && recipeId !== 'new') ? 'updated' : 'added';
+        alert(`Recipe ${verb} successfully`);
         addRecipeForm.reset();
         location.reload();
+    } else {
+        submitRecipeBtn.disabled = false;
+        submitRecipeBtn.textContent = 'Submit';
+        addRecipeMsg.textContent = 'Error saving recipe';
     }
 });
 

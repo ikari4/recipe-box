@@ -1,4 +1,5 @@
 // recipe.js
+// fetches selected recipe from DB and posts text on screen
 
 // renderRecipeIngredients function
 function renderRecipeIngredients(ingredients) {
@@ -7,7 +8,7 @@ function renderRecipeIngredients(ingredients) {
 
     const ul = document.createElement('ul');
 
-    // Helper to check if a value should be displayed
+    // helper to check if a value should be displayed
     const hasValue = v =>
         v !== null &&
         v !== undefined &&
@@ -49,12 +50,12 @@ function renderRecipeIngredients(ingredients) {
 function renderRecipeSteps(steps) {
     const container = document.getElementById('recipe_steps');
 
-    // Clear existing content
+    // clear existing content
     container.innerHTML = '';
 
     const ol = document.createElement('ol');
 
-    // Ensure correct order
+    // ensure correct order
     steps
     .sort((a, b) => a.step_no - b.step_no)
     .forEach(step => {
@@ -68,7 +69,6 @@ function renderRecipeSteps(steps) {
 
     container.appendChild(ol);
 }
-
 
 //displayRecipes function
 async function displayRecipes(recipeId) {
@@ -98,8 +98,9 @@ async function displayRecipes(recipeId) {
     }
 }
 
-
+// 
 // main js starts here
+// 
 const params = new URLSearchParams(window.location.search);
 const recipeId = params.get("id");
 displayRecipes(recipeId);

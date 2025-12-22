@@ -23,13 +23,13 @@ if (req.method === "POST") {
 
         const recipe_id = ingredientData[0].recipe_id;
 
-        // Delete old ingredients for this recipe
+        // delete old ingredients for this recipe
         await turso.execute({
             sql: `DELETE FROM recipe_ingredients WHERE recipe_id = ?`,
             args: [recipe_id]
         });
 
-        // Insert new ingredients
+        // insert new ingredients
         for (const item of ingredientData) {
             const sql = `
                 INSERT INTO recipe_ingredients (

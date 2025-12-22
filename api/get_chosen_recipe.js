@@ -7,7 +7,7 @@ const turso = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
-// Helper to validate strings
+// helper to validate strings
 const isValidString = (s) => typeof s === 'string' && s.trim().length > 0;
 
 export default async function handler(req, res) {

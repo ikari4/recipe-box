@@ -1,27 +1,36 @@
 // add_page.js
 
-//displayRecipes function
+async function initPage() {
+    await initIngredients();
+    await displayRecipes(recipeId);
+};
+
+//displayRecipes function while in edit mode
 async function displayRecipes(recipeId) {
-    try {
-        const res = await fetch(`/api/get_chosen_recipe?searchTerm=${encodeURIComponent(recipeId)}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-    });
+    if (recipeId !== 'new') {
+         try {
+            const res = await fetch(`/api/get_chosen_recipe?searchTerm=${encodeURIComponent(recipeId)}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
 
-    if (!res.ok) throw new Error("Failed to Load Recipe");
+            if (!res.ok) throw new Error("Failed to Load Recipe");
 
-    const json = await res.json();
-    const recipeMeta = json.recipeMeta[0];
-    const recipeSteps = json.recipeSteps;
-    const recipeIngredients = json.recipeIngredients;
+            const json = await res.json();
+            const recipeMeta = json.recipeMeta[0];
+            const recipeSteps = json.recipeSteps;
+            const recipeIngredients = json.recipeIngredients;
 
-    populateRecipeMeta(recipeMeta);
-    populateIngredients(recipeIngredients);
-    populateSteps(recipeSteps);
+            populateRecipeMeta(recipeMeta);
+            populateIngredients(recipeIngredients);
+            populateSteps(recipeSteps);
 
-    } catch (err) {
-        console.error("Load recipe failed:", err);
+        } catch (err) {
+            console.error("Load recipe failed:", err);
+        }
     }
+    addIngredientRow(ingredientNo, ingredientObjectGlobal);
+    addStepRow(stepNo);
 }
 
 // populateRecipeMeta function
@@ -29,13 +38,13 @@ function populateRecipeMeta(meta) {
     document.getElementById("addRecipeName").value = meta.recipe_name;
     document.getElementById("addRecipeDescription").value = meta.recipe_description;
 
-  // If category is returned
+  // if category is returned
     if (meta.recipe_category) {
         document.getElementById("categoryDrop").value = meta.recipe_category;
     }
 }
 
-// populateIngredients function
+// populateIngredients function while in edit mode
 function populateIngredients(ingredients) {
     ingredientEntry.innerHTML = "";
     ingredientNo = 0;
@@ -43,25 +52,25 @@ function populateIngredients(ingredients) {
     (ingredients || [])
         .sort((a, b) => a.ingredient_no - b.ingredient_no)
         .forEach((ing, index) => {
-        addIngredientRow(index, ingredientObjectGlobal);
+            addIngredientRow(index, ingredientObjectGlobal);
 
-        document.getElementById(`addIngredientQuantity${index}`).value =
-            ing.amount_whole;
+            document.getElementById(`addIngredientQuantity${index}`).value =
+                ing.amount_whole;
 
-        document.getElementById(`addIngredientFraction${index}`).value =
-            ing.amount_frac;
+            document.getElementById(`addIngredientFraction${index}`).value =
+                ing.amount_frac;
 
-        document.getElementById(`addUnitDrop${index}`).value =
-            ing.unit_id;
+            document.getElementById(`addUnitDrop${index}`).value =
+                ing.unit_id;
 
-        document.getElementById(`addIngredientDrop${index}`).value =
-            ing.ingredient_id;
+            document.getElementById(`addIngredientDrop${index}`).value =
+                ing.ingredient_id;
         });
 
     ingredientNo = ingredients.length - 1;
 }
 
-// populateSteps function
+// populateSteps function while in edit mode
 function populateSteps(steps) {
     stepEntry.innerHTML = "";
     stepNo = 0;
@@ -69,8 +78,8 @@ function populateSteps(steps) {
     steps
         .sort((a, b) => a.step_no - b.step_no)
         .forEach((step, index) => {
-        addStepRow(index);
-        document.getElementById(`addStep${index}`).value = step.step_text;
+            addStepRow(index);
+            document.getElementById(`addStep${index}`).value = step.step_text;
         });
     stepNo = steps.length -1;        
 }
@@ -85,10 +94,10 @@ async function initIngredients() {
         stepNo = 0;
 
         // only create empty rows if NEW recipe
-        if (!recipeId || recipeId === 'new') {
-            addIngredientRow(ingredientNo, ingredientObjectGlobal);
-            addStepRow(stepNo);
-        }
+        // if (!recipeId || recipeId === 'new') {
+        //     addIngredientRow(ingredientNo, ingredientObjectGlobal);
+        //     addStepRow(stepNo);
+        // }
 
     } catch (err) {
         console.error("Init failed:", err);
@@ -233,20 +242,32 @@ function addStepRow(stepNo)  {
     stepEntry.appendChild(row);
 }
 
+// 
 // main script starts here
+// 
 let ingredientObjectGlobal;
 var ingredientNo = 0;
 var stepNo = 0;
+// stope recipe id sent from index.html
 const params = new URLSearchParams(window.location.search);
 const recipeId = params.get("id");
 
-// 
-(async function initPage() {
-    await initIngredients();
-    if(recipeId && recipeId !== 'new') {
-        await displayRecipes(recipeId);
-    }
-})();
+// call to get array of all ingredients in DB
+// puts in one empty ingredient row if in new mode or...
+// loads selected recipe if in edit mode
+// (async function initPage() {
+//     await initIngredients();
+//     if(recipeId && recipeId !== 'new') {
+//         await displayRecipes(recipeId);
+//     }
+// })();
+
+// (async function initPage() {
+//     await initIngredients();
+//     await displayRecipes(recipeId);
+// })();
+
+initPage();
 
 const addRecipeForm     = document.getElementById("addRecipeForm");
 const ingredientEntry   = document.getElementById("ingredientEntry");
@@ -281,12 +302,13 @@ newIngredientForm.addEventListener('submit', async (e) => {
 
         const json = await res.json();
         
-        // After a new ingredient is successfully added to DB
+        // after a new ingredient is successfully added to DB
         if (res.ok) {
             const newIngredient = json.newIngredient;
             ingredientObjectGlobal.ingredients.push(newIngredient);
             addIngredientMsg.textContent = 'Saved — thank you!';
             newIngredientForm.reset();
+            initPage();
         }
         
         if (res.ok) {
@@ -416,8 +438,9 @@ searchForm.addEventListener('submit', async (e) => {
 });
 
 // display placeholders for counters (rows are created after fetch completes)
-var ingredientNo = 0;
-var stepNo = 0;
+// I commented these out; I think they are not necessary
+// var ingredientNo = 0;
+// var stepNo = 0;
 
 // event listenter to add a new ingredient row
 addIngredientBtn.addEventListener("click", () => {

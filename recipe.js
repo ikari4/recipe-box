@@ -86,10 +86,6 @@ async function displayRecipes(recipeId) {
         if(json) {
             const recipe_title          = document.getElementById("recipe_title");
             const recipe_description    = document.getElementById("recipe_description");
-            
-            console.log('recipeMeta: ', recipeMeta);
-            console.log('recipeSteps: ', recipeSteps);
-            console.log('recipeIngredients: ', recipeIngredients);
 
             recipe_title.innerHTML = recipeMeta[0].recipe_name;
             recipe_description.innerHTML = recipeMeta[0].recipe_description;

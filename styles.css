@@ -343,6 +343,10 @@ button {
     padding: 40px 0px;
 }
 
+#backBtn {
+    align-self: center;
+}
+
 @media screen and (max-width: 900px) {
     #add_page {
         flex-direction: column;

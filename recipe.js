@@ -103,6 +103,15 @@ async function displayRecipes(recipeId) {
 // 
 const params = new URLSearchParams(window.location.search);
 const recipeId = params.get("id");
+
+document.getElementById('backBtn').addEventListener('click', () => {
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        window.location.href = '/index.html';
+    }
+});
+
 displayRecipes(recipeId);
 
 

@@ -4,6 +4,8 @@
 async function initPage() {
     await initIngredients();
     await displayRecipes(recipeId);
+    addIngredientRow(ingredientNo, ingredientObjectGlobal);
+    addStepRow(stepNo);
 };
 
 //displayRecipes function while in edit mode
@@ -30,8 +32,7 @@ async function displayRecipes(recipeId) {
             console.error("Load recipe failed:", err);
         }
     }
-    addIngredientRow(ingredientNo, ingredientObjectGlobal);
-    addStepRow(stepNo);
+
 }
 
 // populateRecipeMeta function
@@ -85,7 +86,7 @@ function populateSteps(steps) {
     stepNo = steps.length -1;        
 }
 
-// call functions to get ingredients then calls to create first ingredient row
+// call functions to get ingredients
 async function initIngredients() {
     try {
         const ingredientsArray = await getIngredients();
@@ -232,6 +233,59 @@ function addStepRow(stepNo)  {
     stepEntry.appendChild(row);
 }
 
+// updates ingredient list when new ingredient added
+function refreshIngredientSelect(selectEl, ingredients) {
+    const currentValue = selectEl.value;
+
+    // remove all options
+    selectEl.innerHTML = "";
+
+    // placeholder
+    const ingrLabel = document.createElement("option");
+    ingrLabel.textContent = "Ingredient";
+    ingrLabel.value = "";
+    ingrLabel.disabled = true;
+    selectEl.appendChild(ingrLabel);
+
+    ingredients.forEach(ingredient => {
+        const opt = document.createElement("option");
+        opt.value = ingredient.ingredient_id;
+        opt.textContent = ingredient.ingredient_name;
+        selectEl.appendChild(opt);
+    });
+
+    // restore previous selection if still valid
+    if (currentValue) {
+        selectEl.value = currentValue;
+    } else {
+        ingrLabel.selected = true;
+    }
+}
+
+// updates all ingredient selects on page
+function refreshAllIngredientSelects() {
+    const selects = document.querySelectorAll(
+        'select[id^="addIngredientDrop"]'
+    );
+
+    selects.forEach(selectEl => {
+        refreshIngredientSelect(
+            selectEl,
+            ingredientObjectGlobal.ingredients
+        );
+    });
+}
+
+// alphabetize the ingredient list
+function sortIngredientsAlphabetically() {
+  ingredientObjectGlobal.ingredients.sort((a, b) =>
+    a.ingredient_name.localeCompare(b.ingredient_name, undefined, {
+      sensitivity: 'base'
+    })
+  );
+}
+
+
 // 
 // main script starts here
 // 
@@ -239,7 +293,7 @@ let ingredientObjectGlobal;
 var ingredientNo = 0;
 var stepNo = 0;
 
-// stope recipe id sent from index.html
+// store recipe id sent from index.html
 const params = new URLSearchParams(window.location.search);
 const recipeId = params.get("id");
 
@@ -260,13 +314,18 @@ const listArea          = document.getElementById('listArea');
 const searchBtn         = document.getElementById('searchBtn');
 const ingredientSubmitBtn = document.getElementById('ingredientSubmitBtn');
 
-document.getElementById('backBtnAdd').addEventListener('click', () => {
+const backAddBtn = document.createElement("button");
+backAddBtn.textContent = "Back";
+backAddBtn.addEventListener('click', () => {
     if (window.history.length > 1) {
         window.history.back();
     } else {
         window.location.href = '/index.html';
     }
 });
+
+const addBottom = document.getElementById("addBottom");
+addBottom.appendChild(backAddBtn);
 
 // submit new ingredient form
 newIngredientForm.addEventListener('submit', async (e) => {
@@ -288,19 +347,16 @@ newIngredientForm.addEventListener('submit', async (e) => {
         
         // after a new ingredient is successfully added to DB
         if (res.ok) {
-            const newIngredient = json.newIngredient;
-            ingredientObjectGlobal.ingredients.push(newIngredient);
-            addIngredientMsg.textContent = 'Saved — thank you!';
-            newIngredientForm.reset();
-            initPage();
-        }
-        
-        if (res.ok) {
             ingredientSubmitBtn.disabled = false;
             ingredientSubmitBtn.textContent = 'Submit';
-            addIngredientMsg.textContent = 'Saved — thank you!';
             searchMsg.textContent = '';
+            const newIngredient = json.newIngredient;
+            ingredientObjectGlobal.ingredients.push(newIngredient);
+            sortIngredientsAlphabetically()
+            refreshAllIngredientSelects();
+            addIngredientMsg.textContent = 'Saved — thank you!';
             newIngredientForm.reset();
+
         } else {
             ingredientSubmitBtn.disabled = false;
             ingredientSubmitBtn.textContent = 'Submit';

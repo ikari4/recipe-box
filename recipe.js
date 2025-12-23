@@ -91,6 +91,19 @@ async function displayRecipes(recipeId) {
             recipe_description.innerHTML = recipeMeta[0].recipe_description;
             renderRecipeIngredients(recipeIngredients);
             renderRecipeSteps(recipeSteps);
+
+            const backBtnRecipe = document.createElement("button");
+            backBtnRecipe.textContent = "Back";
+            backBtnRecipe.addEventListener('click', () => {
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    window.location.href = '/index.html';
+                }
+            });
+
+            const backBtnDiv = document.getElementById("backBtnDiv");
+            backBtnDiv.appendChild(backBtnRecipe);            
         }
 
     } catch (err) {
@@ -103,14 +116,6 @@ async function displayRecipes(recipeId) {
 // 
 const params = new URLSearchParams(window.location.search);
 const recipeId = params.get("id");
-
-document.getElementById('backBtnRecipe').addEventListener('click', () => {
-    if (window.history.length > 1) {
-        window.history.back();
-    } else {
-        window.location.href = '/index.html';
-    }
-});
 
 displayRecipes(recipeId);
 

@@ -163,7 +163,7 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
     // create unit drop
     const units = ["tsp", "tbsp", "fl oz", "cup", "pt", "qt", 
         "gal", "oz", "lb", "g", "kg", "mL", "L", "in", "small",
-        "medium", "large", "pinch", "dash", "sheet"];
+        "medium", "large", "pinch", "dash", "sheet", "head", "clove"];
     const addUnitDrop = document.createElement("select");
     addUnitDrop.name = `addUnitDrop${ingredientNo}`;
     addUnitDrop.id = `addUnitDrop${ingredientNo}`;

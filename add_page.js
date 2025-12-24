@@ -163,7 +163,7 @@ function addIngredientRow(ingredientNo, ingredientObject)  {
     // create unit drop
     const units = ["tsp", "tbsp", "fl oz", "cup", "pt", "qt", 
         "gal", "oz", "lb", "g", "kg", "mL", "L", "in", "small",
-        "medium", "large", "pinch", "dash"];
+        "medium", "large", "pinch", "dash", "sheet"];
     const addUnitDrop = document.createElement("select");
     addUnitDrop.name = `addUnitDrop${ingredientNo}`;
     addUnitDrop.id = `addUnitDrop${ingredientNo}`;
@@ -424,10 +424,19 @@ searchForm.addEventListener('submit', async (e) => {
                         });
 
                         if (patchRes.ok) {
+                            const deletedIngredientName = r.ingredient_name;
+                            ingredientObjectGlobal.ingredients =
+                                ingredientObjectGlobal.ingredients.filter(
+                                    ing => ing.ingredient_name !== deletedIngredientName
+                                );
+                            sortIngredientsAlphabetically();
+                            refreshAllIngredientSelects();
+                            addIngredientMsg.textContent = `"${deletedIngredientName}" deleted`;
                             searchMsg.textContent = `Deleted "${r.ingredient_name}" successfully.`;
                             addIngredientMsg.textContent = '';
                             tr.classList.add("deletedRow");
                             deleteMe.disabled = true;
+
                         } else {
                             searchMsg.textContent = `Error deleting "${r.ingredient_name}".`;
                             addIngredientMsg.textContent = '';
